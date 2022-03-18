@@ -15,12 +15,21 @@
 #include "metadata.h"
 
 #define EPOLL_MAX_EVENT 100000
+#define PATH_MAX 100
 
 typedef struct epoll_event epoll_event_t;
 
 
 int main(int argc, char *argv[]) {
-    meta_data m = {"/home/ilyagu/http-test-suite", "/index.html", strlen("/home/ilyagu/http-test-suite"), false, false};
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
+    } else {
+        perror("getcwd() error");
+        return 1;
+    }
+
+    meta_data m = {cwd, "/index.html", strlen(cwd), false, false};
     int port = 8000;
     long int worker = sysconf(_SC_NPROCESSORS_ONLN);
 
